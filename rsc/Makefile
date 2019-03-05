@@ -29,28 +29,47 @@ ERRPATCH = \
     $(RSC_DIR)/errpatch.tri \
     $(RSC_DIR)/errpatch.val \
     $(RSC_DIR)/errpatch.len
-
 all: $(MODEL) $(PREANAL) $(RESTORE) $(ERRPATCH)
 
 $(wordlist 2,100,$(MODEL)): $(firstword $(MODEL))
 $(firstword $(MODEL)): $(RSC_SRC)/$(MODEL_SIZE).config.json $(RSC_SRC)/$(MODEL_SIZE).model.pickle
-	mkdir -p $(RSC_DIR)
-	PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_model.py --model-size $(MODEL_SIZE) --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    ifeq ($(OS), Windows_NT)
+	    test -d "$(RSC_DIR)" || mkdir "$(RSC_DIR)"
+	    python $(BIN_DIR)/compile_model.py --model-size $(MODEL_SIZE) --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    else
+	    mkdir -p $(RSC_DIR)
+	    PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_model.py --model-size $(MODEL_SIZE) --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    endif
 
 $(wordlist 2,100,$(PREANAL)): $(firstword $(PREANAL))
 $(firstword $(PREANAL)): $(RSC_SRC)/preanal.auto $(RSC_SRC)/preanal.manual
-	mkdir -p $(RSC_DIR)
-	PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_preanal.py --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    ifeq ($(OS), Windows_NT)
+	    test -d "$(RSC_DIR)" || mkdir "$(RSC_DIR)"
+	    python $(BIN_DIR)/compile_preanal.py --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    else
+	    mkdir -p $(RSC_DIR)
+	    PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_preanal.py --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    endif
 
 $(wordlist 2,100,$(RESTORE)): $(firstword $(RESTORE))
 $(firstword $(RESTORE)): $(RSC_SRC)/restore.dic $(RSC_SRC)/vocab.out $(RSC_SRC)/vocab.out.more
-	mkdir -p $(RSC_DIR)
-	PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_restore.py --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    ifeq ($(OS), Windows_NT)
+	    test -d "$(RSC_DIR)" || mkdir "$(RSC_DIR)"
+	    python $(BIN_DIR)/compile_restore.py --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    else
+	    mkdir -p $(RSC_DIR)
+	    PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_restore.py --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    endif
 
 $(wordlist 2,100,$(ERRPATCH)): $(firstword $(ERRPATCH))
 $(firstword $(ERRPATCH)): $(RSC_SRC)/$(MODEL_SIZE).errpatch.auto $(RSC_SRC)/$(MODEL_SIZE).errpatch.manual
-	mkdir -p $(RSC_DIR)
-	PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_errpatch.py --model-size $(MODEL_SIZE) --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    ifeq ($(OS), Windows_NT)
+	    test -d "$(RSC_DIR)" || mkdir "$(RSC_DIR)"
+	    python $(BIN_DIR)/compile_errpatch.py --model-size $(MODEL_SIZE) --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    else
+	    mkdir -p $(RSC_DIR)
+	    PYTHONPATH=$(SRC_PYTHON) python3 $(BIN_DIR)/compile_errpatch.py --model-size $(MODEL_SIZE) --rsc-src $(RSC_SRC) --rsc-dir $(RSC_DIR)
+    endif
 
 clean:
 	rm -rf $(RSC_DIR)

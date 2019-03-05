@@ -97,7 +97,11 @@ void Sentence::_tokenize() {
 
 void Sentence::_characterize() {
     assert(_raw != nullptr);
+#if defined(_WIN32) || defined(_WIN64)	// Windows
+    auto en_US_utf8 = locale("English_United States");
+#else	// Other OS (Mac OS, Linux)
     auto en_US_utf8 = locale("en_US.UTF-8");
+#endif
     auto& facet = use_facet<codecvt<wchar_t, char, mbstate_t>>(en_US_utf8);
     auto mbst = mbstate_t();
     const char* from_next = nullptr;

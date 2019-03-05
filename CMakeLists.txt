@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.10)
 if(NOT APPLE)
     set(HUNTER_BUILD_SHARED_LIBS ON)
 endif()
+if(WIN32)
+        add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+        add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif()
 include("cmake/HunterGate.cmake")
 HunterGate(
         URL "https://github.com/ruslo/hunter/archive/v0.23.34.tar.gz"
